@@ -22,16 +22,19 @@
     "directories": { "output": "dist" },
     "files": ["index.html", "style.css", "script.js", "desktop.js", "electron/**/*", "package.json"],
     "win": {
-      "target": ["nsis", "portable"],
-      "artifactName": "MyWorkCalendar-${version}-${arch}-${target}.${ext}"
+      "target": ["nsis", "portable"]
     },
     "nsis": {
+      "artifactName": "MyWorkCalendar-${version}-${arch}-nsis.${ext}",
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "deleteAppDataOnUninstall": false
+    },
+    "portable": {
+      "artifactName": "MyWorkCalendar-${version}-${arch}-portable.${ext}"
     }
   }
 }
