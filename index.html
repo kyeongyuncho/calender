@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>MY WORKSPACE</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <b>MY WORKSPACE</b>
+          <small id="today"></small>
+        </div>
+        <div class="header-actions">
+          <button id="snippetsBtn" class="sub">📋 자주 쓰는 답변</button>
+          <button id="foldersBtn" class="sub">📁 폴더 바로가기</button>
+          <button id="backup" class="sub">백업</button>
+          <label class="button sub" for="restore">복원</label>
+          <input id="restore" type="file" accept=".json,application/json" hidden>
+          <button id="add" class="primary">＋ 업무 등록</button>
+        </div>
+      </header>
+      <div class="summary-strip" id="stats" aria-label="업무 진행 현황">
+      </div>
+      <main>
+        <section class="panel cal-panel">
+          <div class="panel-head">
+            <h2>업무 캘린더</h2>
+            <div class="nav">
+              <button id="prev">‹</button>
+              <b id="monthTitle"></b>
+              <button id="next">›</button>
+              <button id="goToday" class="sub">오늘</button>
+            </div>
+          </div>
+          <div class="calendar" id="calendar">
+          </div>
+          <div class="legend" id="legend">
+          </div>
+        </section>
+        <section class="panel list-panel">
+          <div class="panel-head">
+            <div>
+              <h2>업무 목록 <span id="listCount"></span></h2>
+              <small id="activeDate">전체 업무</small>
+            </div>
+            <button id="showAll" class="sub">전체 날짜</button>
+          </div>
+          <div class="filters">
+            <input id="search" placeholder="제목 · 내용 검색">
+            <select id="categoryFilter">
+            </select>
+            <select id="filter">
+              <option value="전체">전체 상태</option>
+              <option>접수</option>
+              <option>처리 중</option>
+              <option>검토필요</option>
+              <option>처리완료</option>
+            </select>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>일자</th>
+                  <th>카테고리</th>
+                  <th>제목 / 내용</th>
+                  <th>상태</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody id="taskRows">
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div id="detailModal" class="modal" hidden>
+      <div class="dialog dialog-wide" role="dialog" aria-modal="true" aria-labelledby="detailHeading">
+        <div class="dialog-head">
+          <h2 id="detailHeading">업무 상세보기</h2>
+          <button id="detailClose" aria-label="닫기">✕</button>
+        </div>
+        <div id="detailBody" class="detail-body">
+        </div>
+        <div class="dialog-actions padded">
+          <button id="detailEdit" class="primary">업무 수정</button>
+          <button id="detailDismiss" class="sub">닫기</button>
+        </div>
+      </div>
+    </div>
+    <div id="utilityModal" class="modal" hidden>
+      <div class="dialog dialog-wide" role="dialog" aria-modal="true" aria-labelledby="utilityHeading">
+        <div class="dialog-head">
+          <h2 id="utilityHeading"></h2>
+          <button id="utilityClose" aria-label="닫기">✕</button>
+        </div>
+        <div class="utility-content">
+          <div id="utilityList" class="utility-list">
+          </div>
+          <form id="utilityForm" class="utility-form">
+            <h3 id="utilityFormHeading">새 항목 등록</h3>
+            <label>제목<input id="utilityTitle" maxlength="120" required placeholder="제목"></label>
+            <label id="utilityValueLabel">내용<textarea id="utilityValue" rows="5" required placeholder="자주 사용하는 답변을 입력하세요"></textarea></label>
+            <div class="dialog-actions">
+              <button id="utilityReset" type="button" class="sub">입력 초기화</button>
+              <button type="submit" class="primary">저장</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="modal" class="modal" hidden>
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+        <div class="dialog-head">
+          <h2 id="formTitle">업무 등록</h2>
+          <button id="close" aria-label="닫기">✕</button>
+        </div>
+        <form id="taskForm">
+          <label>업무일자<input id="date" type="date" required></label>
+          <label>카테고리<select id="category" required></select></label>
+          <label>제목<input id="title" maxlength="150" placeholder="업무 제목" required></label>
+          <label>내용<textarea id="detail" rows="5" placeholder="처리 내용이나 메모를 입력하세요"></textarea></label>
+          <label>진행상태<select id="status"><option>접수</option><option>처리 중</option><option>검토필요</option><option>처리완료</option></select></label>
+          <div class="dialog-actions">
+            <button type="button" id="cancel" class="sub">취소</button>
+            <button type="submit" class="primary" id="submit">등록하기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script src="script.js">
+    </script>
+  </body>
+</html>
