@@ -849,3 +849,67 @@ form input,form select,form textarea {
   }
 
 }
+
+/* Desktop options */
+.desktop-app { height: 100dvh; overflow: hidden; }
+.desktop-app .app { height: calc(100dvh - 48px); }
+.desktop-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 7px 12px;
+  color: #dce8f8;
+  background: #142238;
+}
+.desktop-toolbar strong { margin-right: auto; font-size: 11px; letter-spacing: .5px; }
+.desktop-toolbar button { font-size: 12px; padding: 6px 9px; }
+.pin-setting { display: flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; }
+.pin-setting input { margin: 0; accent-color: #4386ee; }
+.mini-dashboard { display: none; }
+.mini-mode .app { display: none; }
+.mini-mode .mini-dashboard {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 48px);
+  padding: 14px;
+  gap: 12px;
+}
+.mini-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.mini-heading h2 { margin: 0 0 5px; font-size: 18px; }
+.mini-heading small, .mini-footer { color: #667891; font-size: 11px; }
+.mini-heading button { flex-shrink: 0; padding: 8px; font-size: 12px; }
+.mini-task-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.mini-task {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-left: 4px solid var(--status-color);
+  background: white;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.mini-task strong { font-size: 14px; }
+.mini-task small { color: var(--status-color); font-size: 11px; }
+.mini-task-detail { color: #718096; font-size: 12px; white-space: pre-line; max-height: 36px; overflow: hidden; }
+.mini-empty { color: #718096; font-size: 13px; line-height: 1.7; }
+.mini-mode .modal { padding: 8px; }
+.mini-mode .dialog { width: 100%; max-height: calc(100dvh - 16px); overflow-y: auto; }
+.mini-mode .dialog form { padding: 12px; gap: 8px; }
+.mini-mode .dialog-head { padding: 12px; }
+.mini-mode .detail-body .detail-grid { grid-template-columns: 1fr; }
+.startup-setting {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.startup-setting input { margin: 0; }
+.utility-form button[hidden] { display: none; }
+@media (max-width: 1250px) {
+  .header-actions { flex-wrap: wrap; justify-content: flex-end; }
+  header { height: auto; min-height: 76px; }
+}

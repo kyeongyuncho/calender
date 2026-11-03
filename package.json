@@ -1,0 +1,40 @@
+{
+  "name": "my-work-calendar-desktop",
+  "version": "1.1.0",
+  "description": "MyWorkCalendar v4.1 Windows desktop dashboard",
+  "author": "kyeongyuncho",
+  "private": true,
+  "main": "electron/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test tests/*.test.cjs",
+    "smoke": "electron . --smoke-test",
+    "build": "electron-builder --win nsis portable --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "com.kyeongyuncho.myworkcalendar",
+    "productName": "MyWorkCalendar",
+    "asar": true,
+    "directories": { "output": "dist" },
+    "files": ["index.html", "style.css", "script.js", "desktop.js", "electron/**/*", "package.json"],
+    "win": {
+      "target": ["nsis", "portable"]
+    },
+    "nsis": {
+      "artifactName": "MyWorkCalendar-${version}-${arch}-nsis.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "portable": {
+      "artifactName": "MyWorkCalendar-${version}-${arch}-portable.${ext}"
+    }
+  }
+}
