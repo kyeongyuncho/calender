@@ -214,6 +214,7 @@ function render() {
   renderStats();
   renderCalendar();
   renderRows();
+  if (window.renderMiniDashboard) window.renderMiniDashboard();
 }
 function openModal(task = null) {
   editingId = task?.id || null;

@@ -64,4 +64,50 @@ module.exports = async function smoke(window) {
     folderCount: JSON.parse(localStorage.getItem('my-work-calendar-folders-v1')).length
   })`);
   assert.deepEqual(persisted, { title: '복원 테스트', count: 1, folderCount: 1 });
+  await contents.executeJavaScript('window.desktop.setMiniMode(true)');
+  const miniLoaded = new Promise(resolve => contents.once('did-finish-load', resolve));
+  contents.reload();
+  await miniLoaded;
+  const mini = await contents.executeJavaScript(`(async () => {
+    for (let i = 0; i < 100 && !document.body.classList.contains('mini-mode'); i++) {
+      await new Promise(resolve => setTimeout(resolve, 20));
+    }
+    const today = new Date();
+    document.getElementById('add').click();
+    document.getElementById('date').value = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    document.getElementById('title').value = '미니 모드 업무';
+    document.getElementById('taskForm').requestSubmit();
+    const checkbox = document.getElementById('alwaysOnTop');
+    checkbox.click();
+    for (let i = 0; i < 100; i++) {
+      if ((await window.desktop.getWindowState()).alwaysOnTop) break;
+      await new Promise(resolve => setTimeout(resolve, 20));
+    }
+    return { mini: document.body.classList.contains('mini-mode'),
+      visible: getComputedStyle(document.getElementById('miniDashboard')).display !== 'none',
+      task: document.getElementById('miniTaskList').textContent.includes('미니 모드 업무'),
+      width: document.documentElement.scrollWidth,
+      viewport: innerWidth,
+      state: await window.desktop.getWindowState() };
+  })()`);
+  assert.equal(mini.mini, true);
+  assert.equal(mini.visible, true);
+  assert.equal(mini.task, true);
+  assert.ok(mini.width <= mini.viewport, 'mini mode must not overflow horizontally');
+  assert.equal(mini.state.alwaysOnTop, true);
+  assert.equal(window.isAlwaysOnTop(), true);
+  assert.ok(window.getBounds().width <= 500);
+  // Keep a compact visual preview in CI logs for review without user data.
+  console.log('MINI_PREVIEW_BASE64:' + (await window.capturePage()).toPNG().toString('base64'));
+  const normal = await contents.executeJavaScript(`(async () => {
+    document.getElementById('miniToggle').click();
+    for (let i = 0; i < 100 && document.body.classList.contains('mini-mode'); i++) {
+      await new Promise(resolve => setTimeout(resolve, 20));
+    }
+    await window.desktop.setAlwaysOnTop(false);
+    return { mini: document.body.classList.contains('mini-mode'), state: await window.desktop.getWindowState() };
+  })()`);
+  assert.equal(normal.mini, false);
+  assert.equal(normal.state.mini, false);
+  assert.equal(window.isAlwaysOnTop(), false);
 };

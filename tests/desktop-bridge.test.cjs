@@ -55,7 +55,10 @@ async function boot() {
   };
   const mainPath = path.join(__dirname, '../electron/main.cjs');
   vm.runInNewContext(fs.readFileSync(mainPath, 'utf8'), {
-    require: name => name === 'electron' ? electron : name === './folders.cjs' ? require('../electron/folders.cjs') : require(name),
+    require: name => name === 'electron' ? electron
+      : name === './folders.cjs' ? require('../electron/folders.cjs')
+        : name === './window-state.cjs' ? { createWindowState: () => ({ get: () => ({ mini: false, alwaysOnTop: false }) }) }
+          : require(name),
     __dirname: path.dirname(mainPath),
     process: { argv: [], env: {}, platform: 'win32', execPath: 'C:\\MyWorkCalendar.exe' },
     Response,

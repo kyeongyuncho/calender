@@ -1,16 +1,18 @@
 'use strict';
 
-const { app, BrowserWindow, Menu, protocol, net, ipcMain, dialog, shell, clipboard } = require('electron');
+const { app, BrowserWindow, Menu, protocol, net, ipcMain, dialog, shell, clipboard, screen } = require('electron');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { openFolder } = require('./folders.cjs');
+const { createWindowState } = require('./window-state.cjs');
 
 const ORIGIN = 'workspace://app/index.html';
 const smoke = process.argv.includes('--smoke-test') && !app.isPackaged;
 const root = path.join(__dirname, '..');
 const assets = new Set(['index.html', 'style.css', 'script.js', 'desktop.js']);
 let mainWindow;
+let windowState;
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'workspace', privileges: { standard: true, secure: true, supportFetchAPI: true } }
@@ -36,6 +38,18 @@ function startupState() {
 }
 
 function registerHandlers() {
+  ipcMain.handle('desktop:window-state', event => {
+    trusted(event);
+    return windowState.get();
+  });
+  ipcMain.handle('desktop:mini-mode', (event, enabled) => {
+    trusted(event);
+    return windowState.setMini(enabled);
+  });
+  ipcMain.handle('desktop:always-on-top', (event, enabled) => {
+    trusted(event);
+    return windowState.setAlwaysOnTop(enabled);
+  });
   ipcMain.handle('desktop:open-folder', (event, input) => {
     trusted(event);
     return openFolder(input, { stat: fs.stat, openPath: folder => shell.openPath(folder) });
@@ -78,6 +92,7 @@ async function createWindow() {
       sandbox: true
     }
   });
+  windowState = createWindowState(mainWindow, screen, path.join(app.getPath('userData'), 'window-state.json'));
   Menu.setApplicationMenu(null);
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   mainWindow.webContents.on('will-navigate', (event, url) => {
@@ -91,7 +106,6 @@ async function createWindow() {
   mainWindow.on('closed', () => { mainWindow = null; });
   await mainWindow.loadURL(ORIGIN);
   if (!smoke) {
-    mainWindow.maximize();
     mainWindow.show();
   }
 }
