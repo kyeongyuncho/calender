@@ -849,3 +849,18 @@ form input,form select,form textarea {
   }
 
 }
+
+/* Desktop options */
+.startup-setting {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.startup-setting input { margin: 0; }
+.utility-form button[hidden] { display: none; }
+@media (max-width: 1250px) {
+  .header-actions { flex-wrap: wrap; justify-content: flex-end; }
+  header { height: auto; min-height: 76px; }
+}

@@ -440,7 +440,9 @@ function fileUrlFromPath(path) {
 }
 async function copyText(value) {
   try {
-    if (navigator.clipboard && window.isSecureContext) {
+    if (window.desktop) {
+      await window.desktop.copyText(value);
+    } else if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(value);
     } else {
       const ta = make('textarea');
@@ -475,10 +477,22 @@ function renderUtilities() {
     copy.onclick = () => copyText(item.value);
     buttons.append(copy);
     if (utilityMode === 'folders') {
-      const open = make('button', 'sub', '폴더 열기 시도');
-      open.onclick = () => {
+      const open = make('button', 'sub', window.desktop ? '폴더 열기' : '폴더 열기 시도');
+      open.onclick = async () => {
+        if (window.desktop) {
+          open.disabled = true;
+          try {
+            const result = await window.desktop.openFolder(item.value);
+            if (!result.ok) alert(result.error);
+          } catch {
+            alert('폴더를 열지 못했습니다. 경로와 접근 권한을 확인하세요.');
+          } finally {
+            open.disabled = false;
+          }
+          return;
+        }
         const url = fileUrlFromPath(item.value);
-        if (!url) return alert('Windows 절대 경로(C:\\...) 또는 공유 폴더(\\\\서버\\공유)를 입력하세요.');
+        if (!url) return alert('Windows 절대 경로 또는 공유 폴더 경로를 입력하세요.');
         const a = make('a');
         a.href = url;
         a.target = '_blank';
@@ -486,7 +500,7 @@ function renderUtilities() {
         document.body.append(a);
         a.click();
         a.remove();
-        alert('브라우저 보안 설정에 따라 폴더 열기가 차단될 수 있습니다. 열리지 않으면 「경로 복사」 후 Win + E 탐색기 주소창에 붙여넣으세요.');
+        alert('브라우저에서는 폴더 열기가 차단될 수 있습니다. EXE 버전을 이용하거나 경로를 복사해 탐색기에 붙여넣으세요.');
       };
       buttons.append(open);
     }
@@ -514,7 +528,7 @@ function renderUtilities() {
     box.append(buttons);
     list.append(box);
   });
-  if (utilityMode === 'folders') list.append(make('div', 'folder-note', '※ 일반 브라우저에서는 보안상 로컬 폴더 열기가 차단될 수 있습니다. 경로 복사는 항상 사용할 수 있도록 제공됩니다.'));
+  if (utilityMode === 'folders') list.append(make('div', 'folder-note', window.desktop ? '※ 폴더 열기를 누르면 Windows 탐색기가 열립니다. 공유 폴더는 네트워크 연결과 접근 권한이 필요합니다.' : '※ 일반 브라우저에서는 보안상 로컬 폴더 열기가 차단될 수 있습니다.'));
 }
 $('utilityForm').addEventListener('submit', e => {
   e.preventDefault();
