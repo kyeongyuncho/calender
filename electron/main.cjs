@@ -55,10 +55,10 @@ function registerHandlers() {
     app.setLoginItemSettings({ openAtLogin: enabled, path: process.execPath });
     return startupState();
   });
-  ipcMain.handle('desktop:copy-text', (event, text) => {
+  ipcMain.handle('desktop:copy-text', async (event, text) => {
     trusted(event);
     if (typeof text !== 'string' || text.length > 10 * 1024 * 1024) throw new Error('복사할 내용이 올바르지 않습니다.');
-    clipboard.writeText(text);
+    await clipboard.writeText(text);
   });
 }
 

@@ -54,7 +54,7 @@ module.exports = async function smoke(window) {
   })()`);
   assert.equal(initial.title, '복원 테스트');
   assert.equal(initial.snippets[0].value, '감사합니다.');
-  assert.equal(clipboard.readText(), '캘린더 복사 테스트');
+  assert.equal(await clipboard.readText(), '캘린더 복사 테스트');
   const loaded = new Promise(resolve => contents.once('did-finish-load', resolve));
   contents.reload();
   await loaded;

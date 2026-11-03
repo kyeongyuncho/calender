@@ -81,9 +81,9 @@ test('folder picker, clipboard, and startup settings reach native APIs', async (
   const { handlers, event, chosen, copied, login, win } = await boot();
   assert.equal(await handlers.get('desktop:choose-folder')(event), 'C:\\업무 자료');
   assert.equal(chosen[0], win);
-  handlers.get('desktop:copy-text')(event, '감사합니다.');
+  await handlers.get('desktop:copy-text')(event, '감사합니다.');
   assert.deepEqual(copied, ['감사합니다.']);
-  assert.throws(() => handlers.get('desktop:copy-text')(event, {}));
+  await assert.rejects(handlers.get('desktop:copy-text')(event, {}));
   assert.throws(() => handlers.get('desktop:set-startup')(event, 'yes'));
   assert.equal(handlers.get('desktop:set-startup')(event, true).enabled, true);
   assert.equal(login[0].path, 'C:\\MyWorkCalendar.exe');
